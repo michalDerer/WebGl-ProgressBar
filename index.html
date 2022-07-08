@@ -1,0 +1,55 @@
+<html style="width: 100%;height: 100%;margin: 0;padding: 0;background-color: gray;">
+    <head>
+
+    </head>
+
+    <body style="width: 100%;height: 100%;margin: 0;padding: 0;background-color: gray;">
+
+        <canvas id="canvas" style="width:inherit; height:inherit;margin:0;padding:0;">
+			HTML5 Canvas is not supported!
+		</canvas>
+
+        <div style="position: fixed; top: 0; left: 10; width: 300px; color: blue;">
+            <div>
+                <div id="ttX">Slider value</div>
+                <input style="width: 500;" type="range" min="-2.0" max="2.0" step="0.01" value="0" class="slider" id="stX">
+            </div>
+            
+            <div >
+                <div id="ttY">Slider value</div>
+                <input style="width: 500;" type="range" min="-2.0" max="2.0" step="0.01" value="0" class="slider" id="stY">
+            </div>
+
+            <div >
+                <div id="ttZ">Slider value</div>
+                <input style="width: 500;" type="range" min="-2" max="2" step="0.01" value="0" class="slider" id="stZ">
+            </div>
+
+            <div >
+                <button onclick="StartRenderLoop()"> Start RenderLoop </button>
+            </div>
+
+            <div >
+                <button onclick="StopRenderLoop()"> Stop RenderLoop </button>
+            </div>
+
+            <div >
+                <button onclick="DrawFrame()"> DrawFrame </button>
+            </div>
+
+            <div >
+                <button onclick="UpdateProgressAndDrawFrame()"> Update progress and draw frame </button>
+            </div>
+        </div>
+
+        <div style="position: fixed; top: 0; right: 210; width: 300px; color: blue;">
+            <div>
+                <div id="progresst">Slider value</div>
+                <input style="width: 500;" type="range" min="0" max="1" step="0.001" value="0" class="slider" id="progresss">
+            </div>
+        </div>
+
+        <script type="text/javascript" src="deploy/ProgressBar.js"></script>
+        <script type="text/javascript" src="deploy/ProgressBarExample.js"></script>
+    </body>
+</html> 
