@@ -16,12 +16,12 @@ class ProgressBar {
     #VEO 
     #VAO
 
-    #renderLoopActive    //informative - state of render loop
+    #renderLoopActive    //1: render loop active | 0: render loop inactive
+    #renderLoopRepeat    //1: render loop continues | 0: render loop breaks
     #flustrum            //flustrum dimensions
 
     drawCallsData       //rendering data
     clearColor          //color buffer will be wiped to this color
-    renderLoopRepeat    //1: render loop continues | 0: render loop breaks
 
 
     constructor(canvas) {
@@ -97,11 +97,11 @@ class ProgressBar {
 
         //general-private
         this.#renderLoopActive = 0
+        this.#renderLoopRepeat = 1
         this.#flustrum = [1/*r*/, 1/*t*/, -1/*f*/]
 
         //general public
         this.clearColor = [0, 0, 0]
-        this.renderLoopRepeat = 1
 
         //initialization
         this.#matOrto = ProgressBar.Orto(this.#flustrum[0] /* * (this.#canvas.width / this.#canvas.height)*/, this.#flustrum[1], this.#flustrum[2])
@@ -116,6 +116,28 @@ class ProgressBar {
 
         //window.onresize = () => { this.WindowResizeListener() }
         //this.WindowResizeListener()
+    }
+
+    FreeGl(){
+        this.#gl.useProgram(null)
+
+        this.#gl.deleteProgram(this.#program)
+        this.#gl.deleteBuffer(this.#VBO)
+        this.#gl.deleteBuffer(this.#VEO)
+        this.#gl.deleteVertexArray(this.#VAO)
+
+        /*
+        console.log(this.#gl.getParameter(this.#gl.CURRENT_PROGRAM))
+        console.log(this.#gl.getParameter(this.#gl.ARRAY_BUFFER_BINDING))
+        console.log(this.#gl.getParameter(this.#gl.ELEMENT_ARRAY_BUFFER_BINDING))
+        console.log(this.#gl.getParameter(this.#gl.VERTEX_ARRAY_BINDING))
+        */
+        /*
+        console.log(this.#program)
+        console.log(this.#VBO)
+        console.log(this.#VEO)
+        console.log(this.#VAO)
+       */
     }
 
     WindowResizeListener(event){
@@ -270,13 +292,17 @@ class ProgressBar {
         return this.#renderLoopActive;
     }
 
+    RenderLoopStop(){
+        this.#renderLoopRepeat = 0
+    }
+
     RenderLoop(){
         if (this.#renderLoopActive == 1)
         {
             return
         }
 
-        this.renderLoopRepeat = 1
+        this.#renderLoopRepeat = 1
         this.#renderLoopActive = 1
         this.#gl.useProgram(this.#program)
         this.#gl.bindVertexArray(this.#VAO)
@@ -288,7 +314,7 @@ class ProgressBar {
             this.#Draw(this.drawCallsData[0])
             this.#Draw(this.drawCallsData[1])
 
-            if (this.renderLoopRepeat == 1)
+            if (this.#renderLoopRepeat == 1)
             {
                 window.requestAnimationFrame(loop)
             }
@@ -299,6 +325,26 @@ class ProgressBar {
         }
 
         loop();
+    }
+
+    SetColorBG(r, g, b) {
+        this.clearColor[0] = r
+        this.clearColor[1] = g
+        this.clearColor[2] = b
+
+        this.#gl.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], 1)
+    }
+
+    SetColorBorder(r, g, b) {
+        this.drawCallsData[0].tint[0] = r
+        this.drawCallsData[0].tint[1] = g
+        this.drawCallsData[0].tint[2] = b
+    }
+
+    SetColorSlider(r, g, b) {
+        this.drawCallsData[1].tint[0] = r
+        this.drawCallsData[1].tint[1] = g
+        this.drawCallsData[1].tint[2] = b
     }
 
     static Mul4m(matA, matB){

@@ -1,22 +1,31 @@
 let progressBar = new ProgressBar(document.getElementById('canvas'))
 
+progressBar.SetColorBG(0.7, 0.4, 0.2)
+progressBar.SetColorBorder(1, 0, 0)
+progressBar.SetColorSlider(0, 0, 1)
+
 progressBar.WindowResizeListener()
 progressBar.RenderLoop()
+
 
 function StartRenderLoop(){
     progressBar.RenderLoop()
 }
 
 function StopRenderLoop(){
-    progressBar.renderLoopRepeat = 0;
+    progressBar.RenderLoopStop()
 }
 
 function DrawFrame(){
-    progressBar.DrawFrame();
+    progressBar.DrawFrame()
 }
 
 function UpdateProgressAndDrawFrame(){
     progressBar.DrawProgress(progressBar.drawCallsData[1].progress + 0.07)
+}
+
+function Free(){
+    progressBar.FreeGl()
 }
 
 //------------------------------------------------------------------------------------------------
