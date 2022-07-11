@@ -26,7 +26,12 @@ class ProgressBar {
 
     constructor(canvas) {
         this.#canvas = canvas
-        this.#gl = this.#canvas.getContext('webgl2')
+
+        const attribs = {
+            antialiasing: false
+        }
+
+        this.#gl = this.#canvas.getContext('webgl2', attribs)
 
         //drawcalls
         //pouzivam row major zaznam matic, pri vkladani do gl treba transponovat
@@ -80,10 +85,10 @@ class ProgressBar {
             0,2,3])
 
         //transformations
-        this.#matOrto = [] //matrix of orto projection
+        this.#matOrto = []                                              //matrix of orto projection
         this.#translateRight = [1,0,0,0.5, 0,1,0,0, 0,0,1,0, 0,0,0,1]
         this.#translateLeft = [1,0,0,-0.5, 0,1,0,0, 0,0,1,0, 0,0,0,1]
-        this.#scaleProg = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
+        this.#scaleProg = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]          //scale modified by progress
 
         //gl-shader
         this.#program
@@ -140,12 +145,12 @@ class ProgressBar {
        */
     }
 
-    WindowResizeListener(event){
-        this.#canvas.width = window.innerWidth
-        this.#canvas.height = window.innerHeight
+    // WindowResizeListener(event){
+    //     this.#canvas.width = window.innerWidth
+    //     this.#canvas.height = window.innerHeight
     
-        //this.#matOrto = ProgressBar.Orto(this.#flustrum[0] /* * (this.#canvas.width / this.#canvas.height)*/, this.#flustrum[1], this.#flustrum[2])
-    }
+    //     //this.#matOrto = ProgressBar.Orto(this.#flustrum[0] /* * (this.#canvas.width / this.#canvas.height)*/, this.#flustrum[1], this.#flustrum[2])
+    // }
 
     #BuildProgram(vertSource, fragSource){
         if (this.#program)
@@ -308,7 +313,17 @@ class ProgressBar {
         this.#gl.bindVertexArray(this.#VAO)
 
         const loop = () => {
-            this.#gl.viewport(0, 0, this.#canvas.width, this.#canvas.height)
+
+            this.#gl.canvas.width = Math./*round*/floor(this.#gl.canvas.clientWidth * window.devicePixelRatio) 
+            this.#gl.canvas.height = Math./*round*/floor(this.#gl.canvas.clientHeight * window.devicePixelRatio)
+
+            this.#canvas.width = this.#gl.canvas.width 
+            this.#canvas.height = this.#gl.canvas.height 
+
+            //this.#gl.viewport(0, 0, this.#gl.canvas.width, this.#gl.canvas.height);
+            this.#gl.viewport(0, 0, this.#gl.drawingBufferWidth, this.#gl.drawingBufferHeight);
+
+
             this.#gl.clear(this.#gl.COLOR_BUFFER_BIT | this.#gl.DEPTH_BUFFER_BIT)
 
             this.#Draw(this.drawCallsData[0])
